@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Email — InnoCAD</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.verify-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f2f8;
+  padding: 20px;
+}
+
+.verify-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 48px 40px;
+  text-align: center;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(15,23,42,0.10);
+}
+
+.verify-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 28px;
+}
+
+.verify-icon.loading {
+  background: #e7ecff;
+  animation: pulse 1.2s ease infinite;
+}
+
+.verify-icon.success { background: #d1fae5; }
+.verify-icon.error { background: #fee2e2; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.verify-card h2 {
+  font-size: 22px;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.verify-card p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.verify-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.verify-btn:hover {
+  background: #152d6e;
+  transform: translateY(-2px);
+}
+</style>
+</head>
+<body>
+
+<div class="verify-container">
+  <div class="verify-card" id="verifyCard">
+    <div class="verify-icon loading" id="verifyIcon">⏳</div>
+    <h2 id="verifyTitle">Verifying your email...</h2>
+    <p id="verifyMessage">Please wait while we verify your email address.</p>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+
+  const icon = document.getElementById('verifyIcon');
+  const title = document.getElementById('verifyTitle');
+  const message = document.getElementById('verifyMessage');
+  const card = document.getElementById('verifyCard');
+
+  if (!token) {
+    icon.className = 'verify-icon error';
+    icon.textContent = '✗';
+    title.textContent = 'Invalid Link';
+    message.textContent = 'This verification link is invalid or missing a token.';
+    card.innerHTML += '<a href="login.html" class="verify-btn">Go to Login</a>';
+    return;
+  }
+
+  try {
+    const res = await fetch(`${InnoCAD.API}/auth/verify-email/${token}`);
+    const data = await res.json();
+
+    if (data.success) {
+      icon.className = 'verify-icon success';
+      icon.textContent = '✓';
+      title.textContent = 'Email Verified!';
+      message.textContent = 'Your email has been verified successfully. You can now sign in to your account.';
+      card.innerHTML += '<a href="login.html?verified=true" class="verify-btn">Sign In Now</a>';
+    } else {
+      icon.className = 'verify-icon error';
+      icon.textContent = '✗';
+      title.textContent = 'Verification Failed';
+      message.textContent = data.message || 'This link may have expired. Please register again.';
+      card.innerHTML += '<a href="registration.html" class="verify-btn">Register Again</a>';
+    }
+  } catch (err) {
+    icon.className = 'verify-icon error';
+    icon.textContent = '✗';
+    title.textContent = 'Something went wrong';
+    message.textContent = 'Network error. Please check your connection and try again.';
+    card.innerHTML += '<a href="login.html" class="verify-btn">Go to Login</a>';
+  }
+});
+</script>
+
+</body>
+</html>

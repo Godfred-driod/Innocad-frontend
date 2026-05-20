@@ -1,0 +1,359 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f5f5f5;
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 900px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  padding: 30px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Form Section */
+.form-section {
+  width: 50%;
+  background: #eaeaea;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.form-section input,
+.form-section textarea {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+textarea {
+  height: 120px;
+  resize: none;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.upload-btn {
+  background: #1e1b4b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.send-btn {
+  background: #ddd;
+  color: #1e1b4b;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#fileName {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* User Type Selection */
+.user-type-section {
+  margin-bottom: 20px;
+}
+
+.user-type-section label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.user-type-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.user-type-btn {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #ccc;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.user-type-btn i {
+  font-size: 16px;
+}
+
+.user-type-btn:hover {
+  border-color: #1e1b4b;
+  background: #f0f0f0;
+  color: #1e1b4b;
+}
+
+.user-type-btn.selected {
+  background: #1e1b4b;
+  color: white;
+  border-color: #1e1b4b;
+}
+
+/* Info Section */
+.info-section {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.info-section h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.info-section p {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+/* Social Icons */
+.icons {
+  display: flex;
+  gap: 20px;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.icons i {
+  cursor: pointer;
+  transition: 0.3s;
+  color: #333;
+}
+
+.icons i:hover {
+  color: #1e1b4b;
+  transform: scale(1.2);
+}
+
+.line {
+  width: 100%;
+  height: 2px;
+  background: #ddd;
+}
+
+/* ========================
+   RESPONSIVE DESIGN
+======================== */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  .container {
+    height: auto;
+    padding: 20px;
+  }
+
+  .card {
+    width: 100%;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .close-btn {
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+  }
+
+  .form-section {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .form-section input,
+  .form-section textarea {
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  textarea {
+    height: 100px;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .upload-btn,
+  .send-btn {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .info-section {
+    width: 100%;
+    padding: 20px 0;
+  }
+
+  .info-section h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .info-section p {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .icons {
+    gap: 15px;
+    font-size: 18px;
+  }
+
+  .user-type-buttons {
+    gap: 8px;
+  }
+
+  .user-type-btn {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .user-type-btn i {
+    font-size: 14px;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  .container {
+    padding: 15px;
+  }
+
+  .card {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .close-btn {
+    top: 8px;
+    right: 12px;
+    font-size: 18px;
+  }
+
+  .form-section {
+    padding: 15px;
+    background: #f0f0f0;
+  }
+
+  .form-section input,
+  .form-section textarea {
+    margin-bottom: 12px;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  textarea {
+    height: 80px;
+  }
+
+  .buttons {
+    gap: 8px;
+  }
+
+  .upload-btn,
+  .send-btn {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .info-section {
+    padding: 15px 0;
+  }
+
+  .info-section h1 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .info-section p {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+
+  .icons {
+    gap: 12px;
+    font-size: 16px;
+  }
+
+  .icons i:hover {
+    transform: scale(1.1);
+  }
+
+  .user-type-section label {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .user-type-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .user-type-btn {
+    padding: 10px;
+    font-size: 11px;
+    flex: 1;
+  }
+
+  .user-type-btn i {
+    font-size: 13px;
+  }
+
+  #fileName {
+    font-size: 12px;
+  }
+}

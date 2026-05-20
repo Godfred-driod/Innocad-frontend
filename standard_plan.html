@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Standard Plan</title>
+<link rel="stylesheet" href="standard_plan.css">
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="close" onclick="goBack()">×</div>
+
+    <div class="header">
+        <h1>Standard Plan</h1>
+        <p>Balanced pricing for quality designs and growing projects</p>
+    </div>
+
+    <div class="cards">
+
+        <div class="card dark">
+            <div>
+                <h3>Parts only</h3>
+                <div class="price">$20–40</div>
+                <div class="features">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>High-precision 3D modeling</li>
+                        <li>Clean geometry</li>
+                        <li>Fast delivery</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn" onclick="startOrder('standard', 'parts')">Get Started</button>
+        </div>
+
+        <div class="card light">
+            <div>
+                <h3>Parts & Assembly</h3>
+                <div class="price">$50–120</div>
+                <div class="features">
+                    <ul>
+                        <li>Multi-part design</li>
+                        <li>Accurate constraints</li>
+                        <li>Structure validation</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn" onclick="startOrder('standard', 'assembly')">Get Started</button>
+        </div>
+
+        <div class="card dark">
+            <div>
+                <h3>Drawing</h3>
+                <div class="price">$15–30</div>
+                <div class="features">
+                    <ul>
+                        <li>2D documentation</li>
+                        <li>Dimensioned views</li>
+                        <li>Print-ready</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn" onclick="startOrder('standard', 'drawing')">Get Started</button>
+        </div>
+
+        <div class="card light">
+            <div>
+                <h3>Simulation</h3>
+                <div class="price">$40–100</div>
+                <div class="features">
+                    <ul>
+                        <li>Performance analysis</li>
+                        <li>Stress insights</li>
+                        <li>Visual reports</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn" onclick="startOrder('standard', 'simulation')">Get Started</button>
+        </div>
+
+    </div>
+
+    <div class="notes">
+        <h3>Key Notes</h3>
+        <ul>
+            <li>Prices are starting ranges</li>
+            <li>Complex projects cost more</li>
+            <li>Add-ons available</li>
+            <li>Bulk discounts apply</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        Not sure what you need?
+        <button>Contact us</button>
+    </div>
+
+</div>
+<script src="auth.js"></script>
+<script>
+function goBack() {
+    window.location.href = 'pricing.html';
+}
+
+function startOrder(plan, service) {
+  if (!InnoCAD.isLoggedIn()) {
+    window.location.href = 'login.html?next=order-form.html?plan=' + plan;
+    return;
+  }
+  window.location.href = `order-form.html?plan=${plan}&service=${service}`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Place Order — InnoCAD</title>
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="style.css">
+<style>
+.order-wrap {
+  max-width: 680px;
+  margin: 40px auto;
+  padding: 0 24px 60px;
+}
+
+.order-wrap h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.order-wrap .subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 32px;
+}
+
+/* Steps indicator */
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 36px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: #e2e6f0;
+  z-index: 0;
+}
+
+.step.done:not(:last-child)::after { background: #10b981; }
+.step.active:not(:last-child)::after { background: #e2e6f0; }
+
+.step-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid #e2e6f0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ca3af;
+  position: relative;
+  z-index: 1;
+  transition: all 0.2s ease;
+}
+
+.step.done .step-dot {
+  background: #10b981;
+  border-color: #10b981;
+  color: #fff;
+}
+
+.step.active .step-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.step-label {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 6px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.step.active .step-label { color: var(--accent); font-weight: 600; }
+.step.done .step-label { color: #10b981; font-weight: 600; }
+
+/* Form card */
+.form-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e2e6f0;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.06);
+  padding: 32px;
+  margin-bottom: 16px;
+}
+
+.form-card h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f0f2f8;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 7px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #e2e6f0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31,60,136,0.08);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+/* Service cards */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.service-card {
+  border: 2px solid #e2e6f0;
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fff;
+  text-align: left;
+}
+
+.service-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.service-card.selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.service-card .service-icon { font-size: 24px; margin-bottom: 8px; display: block; }
+.service-card .service-name { font-size: 14px; font-weight: 600; display: block; }
+.service-card .service-desc { font-size: 12px; color: #6b7280; margin-top: 3px; display: block; }
+.service-card.selected .service-desc { color: rgba(255,255,255,0.8); }
+
+/* Price selector */
+.price-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.price-option {
+  border: 2px solid #e2e6f0;
+  border-radius: 10px;
+  padding: 14px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  background: #fff;
+}
+
+.price-option:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.price-option.selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.price-option .price-amount {
+  font-size: 20px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.price-option .price-desc {
+  font-size: 11px;
+  color: #6b7280;
+  display: block;
+}
+
+.price-option.selected .price-desc { color: rgba(255,255,255,0.8); }
+
+/* Order summary */
+.order-summary {
+  background: #f7f8fc;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.order-summary h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 14px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.summary-row.total {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 16px;
+  padding-top: 10px;
+  border-top: 1px solid #e2e6f0;
+  margin-top: 8px;
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-back {
+  padding: 12px 24px;
+  border: 1px solid #e2e6f0;
+  background: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover { background: #f7f8fc; }
+
+.btn-next {
+  flex: 1;
+  padding: 13px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.btn-next:hover { background: #152d6e; transform: translateY(-1px); }
+.btn-next:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+.error-msg {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+  border: 1px solid #fecaca;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+/* Upload area */
+.upload-area {
+  border: 2px dashed #e2e6f0;
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+.upload-area:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.upload-area.has-file {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.upload-icon { font-size: 28px; margin-bottom: 8px; }
+.upload-text { font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 4px; }
+.upload-sub { font-size: 12px; color: #9ca3af; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 600px) {
+  .service-grid { grid-template-columns: 1fr 1fr; }
+  .price-options { grid-template-columns: 1fr; }
+  .form-card { padding: 20px; }
+  .order-wrap { padding: 0 16px 40px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">InnoCAD</div>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu" style="margin-left:auto;">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-left" id="navMenu">
+    <div class="nav-links">
+      <a href="Index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="pricing.html">Prices</a>
+      <a class="contact" href="contact.html">Contact us</a>
+    </div>
+    <a class="nav-login" href="login.html" aria-label="Login">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="8" r="3" stroke="#0f172a" stroke-width="1.5"/>
+        <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </div>
+</nav>
+
+<div class="order-wrap">
+  <h1>Place an Order</h1>
+  <p class="subtitle">Fill in your project details and complete payment to get started</p>
+
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step active" id="step-1">
+      <div class="step-dot">1</div>
+      <div class="step-label">Service</div>
+    </div>
+    <div class="step" id="step-2">
+      <div class="step-dot">2</div>
+      <div class="step-label">Details</div>
+    </div>
+    <div class="step" id="step-3">
+      <div class="step-dot">3</div>
+      <div class="step-label">Payment</div>
+    </div>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- STEP 1 — Service & Plan -->
+  <div id="page-1">
+    <div class="form-card">
+      <h2>Select your service</h2>
+
+      <div class="form-group">
+        <label>What do you need?</label>
+        <div class="service-grid">
+          <div class="service-card" onclick="selectService('parts', this)">
+            <span class="service-icon">🔩</span>
+            <span class="service-name">Parts</span>
+            <span class="service-desc">Individual 3D component models</span>
+          </div>
+          <div class="service-card" onclick="selectService('assembly', this)">
+            <span class="service-icon">⚙️</span>
+            <span class="service-name">Assembly</span>
+            <span class="service-desc">Multi-part assembly design</span>
+          </div>
+          <div class="service-card" onclick="selectService('drawing', this)">
+            <span class="service-icon">📐</span>
+            <span class="service-name">Drawing</span>
+            <span class="service-desc">Technical 2D drawings</span>
+          </div>
+          <div class="service-card" onclick="selectService('simulation', this)">
+            <span class="service-icon">📊</span>
+            <span class="service-name">Simulation</span>
+            <span class="service-desc">FEA & performance analysis</span>
+          </div>
+        </div>
+        <input type="hidden" id="service_type" value="">
+      </div>
+
+      <div class="form-group">
+        <label>Select your plan</label>
+        <select id="plan" onchange="updatePrices()">
+          <option value="">Choose a plan...</option>
+          <option value="student">Student</option>
+          <option value="standard">Standard</option>
+          <option value="professional">Professional</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="price-section" style="display:none;">
+        <label>Select price range</label>
+        <div class="price-options" id="price-options"></div>
+        <input type="hidden" id="amount" value="">
+      </div>
+
+    </div>
+    <div class="btn-row">
+      <button class="btn-next" onclick="goToStep2()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 — Project Details -->
+  <div id="page-2" style="display:none;">
+    <div class="form-card">
+      <h2>Describe your project</h2>
+      <div class="form-group">
+  <label for="description">Project Description *</label>
+  <textarea
+    id="description"
+    placeholder="Describe exactly what you need. Include dimensions, materials, software preferences, reference files, or anything else relevant to your project. The more detail you provide the better."
+  ></textarea>
+  <div style="font-size:12px;color:#9ca3af;margin-top:4px;" id="char-count">0 / 2000 characters</div>
+</div>
+
+<div class="form-group">
+  <label>Attach Reference File (optional)</label>
+  <div class="upload-area" id="uploadArea" onclick="document.getElementById('order-file').click()">
+    <div class="upload-icon">📎</div>
+    <div class="upload-text">Click to attach a file</div>
+    <div class="upload-sub">PDF, DWG, STP, PNG, JPG — max 10MB</div>
+    <input 
+      type="file" 
+      id="order-file" 
+      hidden 
+      accept=".pdf,.dwg,.stp,.step,.png,.jpg,.jpeg"
+    >
+  </div>
+  <div id="file-preview" style="display:none;margin-top:10px;padding:10px 14px;background:#f7f8fc;border-radius:8px;border:1px solid #e2e6f0;display:none;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:18px;" id="file-icon">📄</span>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#0f172a;" id="file-name-display"></div>
+        <div style="font-size:11px;color:#9ca3af;" id="file-size-display"></div>
+      </div>
+    </div>
+    <button onclick="removeFile()" style="background:none;border:none;cursor:pointer;color:#ef4444;font-size:18px;padding:4px;">×</button>
+  </div>
+</div>
+    </div>
+
+    <!-- Summary -->
+    <div class="order-summary">
+      <h3>Order Summary</h3>
+      <div class="summary-row">
+        <span>Service</span>
+        <span id="sum-service" style="text-transform:capitalize;font-weight:500;color:#0f172a;">—</span>
+      </div>
+      <div class="summary-row">
+        <span>Plan</span>
+        <span id="sum-plan" style="text-transform:capitalize;font-weight:500;color:#0f172a;">—</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span id="sum-amount">—</span>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goToStep1()">← Back</button>
+      <button class="btn-next" onclick="goToStep3()">Continue to Payment →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 — Payment -->
+  <div id="page-3" style="display:none;">
+    <div class="form-card">
+      <h2>Complete Payment</h2>
+      <p style="font-size:14px;color:#6b7280;margin-bottom:20px;">
+        Your order will be confirmed once payment is completed. 
+        You'll receive a confirmation email and our team will start working shortly.
+      </p>
+
+      <div class="order-summary">
+        <h3>Final Order Summary</h3>
+        <div class="summary-row">
+          <span>Service</span>
+          <span id="final-service" style="text-transform:capitalize;font-weight:500;color:#0f172a;">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Plan</span>
+          <span id="final-plan" style="text-transform:capitalize;font-weight:500;color:#0f172a;">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Description</span>
+          <span id="final-desc" style="max-width:300px;text-align:right;color:#374151;">—</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total (USD)</span>
+          <span id="final-amount">—</span>
+        </div>
+      </div>
+
+      <div style="background:#f0f4ff;border-radius:8px;padding:14px;font-size:13px;color:#1e40af;border:1px solid #bfdbfe;">
+        🔒 Payment is processed securely through Paystack. 
+        You'll be redirected to complete payment and then brought back automatically.
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goToStep2()">← Back</button>
+      <button class="btn-next" id="pay-btn" onclick="submitOrder()">
+        Pay Now →
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">
+    <h2>Inno<span>CAD</span></h2>
+    <p class="tagline">Where Innovation Meets Reality</p>
+  </div>
+  <div class="footer-center">
+    <a href="Index.html">Home</a>
+    <a href="services.html">Services</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <div class="footer-right">
+    <a href="#" title="LinkedIn" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+    </a>
+    <a href="#" title="Twitter" aria-label="Twitter">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7s1.1 1.5 1-4.35a4.5 4.5 0 00-1-3.65z"/></svg>
+    </a>
+    <a href="#" title="Instagram" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18.5" cy="5.5" r="1.5"/></svg>
+    </a>
+    <a href="#" title="Facebook" aria-label="Facebook">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a6 6 0 00-6 6v3H7v4h2v8h4v-8h3l1-4h-4V8a1 1 0 011-1h3z"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+<script src="app.js"></script>
+<script>
+// ── GUARD ─────────────────────────────────────────────────
+if (!InnoCAD.isLoggedIn()) {
+  window.location.href = 'login.html?next=order-form.html';
+}
+
+// ── PRICE TABLE ───────────────────────────────────────────
+const prices = {
+  student: {
+    parts:      [{ label: 'Basic', amount: 10 }, { label: 'Standard', amount: 12 }, { label: 'Complex', amount: 15 }],
+    assembly:   [{ label: 'Basic', amount: 25 }, { label: 'Standard', amount: 35 }, { label: 'Complex', amount: 50 }],
+    drawing:    [{ label: 'Basic', amount: 5  }, { label: 'Standard', amount: 7  }, { label: 'Complex', amount: 10 }],
+    simulation: [{ label: 'Basic', amount: 15 }, { label: 'Standard', amount: 25 }, { label: 'Complex', amount: 40 }]
+  },
+  standard: {
+    parts:      [{ label: 'Basic', amount: 20 }, { label: 'Standard', amount: 30 }, { label: 'Complex', amount: 40 }],
+    assembly:   [{ label: 'Basic', amount: 50 }, { label: 'Standard', amount: 80 }, { label: 'Complex', amount: 120 }],
+    drawing:    [{ label: 'Basic', amount: 15 }, { label: 'Standard', amount: 22 }, { label: 'Complex', amount: 30 }],
+    simulation: [{ label: 'Basic', amount: 40 }, { label: 'Standard', amount: 65 }, { label: 'Complex', amount: 100 }]
+  },
+  professional: {
+    parts:      [{ label: 'Basic', amount: 60 }, { label: 'Standard', amount: 90 }, { label: 'Complex', amount: 130 }],
+    assembly:   [{ label: 'Basic', amount: 150 }, { label: 'Standard', amount: 220 }, { label: 'Complex', amount: 320 }],
+    drawing:    [{ label: 'Basic', amount: 40 }, { label: 'Standard', amount: 65 }, { label: 'Complex', amount: 100 }],
+    simulation: [{ label: 'Basic', amount: 120 }, { label: 'Standard', amount: 180 }, { label: 'Complex', amount: 250 }]
+  }
+};
+
+// ── STATE ─────────────────────────────────────────────────
+let selectedService = '';
+let selectedPlan = '';
+let selectedAmount = 0;
+
+// ── INIT ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // Pre-fill plan from URL if coming from pricing page
+const params = new URLSearchParams(window.location.search);
+const plan = params.get('plan');
+const service = params.get('service');
+
+if (plan) {
+  document.getElementById('plan').value = plan;
+  selectedPlan = plan;
+}
+
+if (service) {
+  const card = document.querySelector(`[onclick*="'${service}'"]`);
+  if (card) selectService(service, card);
+}
+
+if (plan) updatePrices();
+});
+
+// ── SERVICE SELECTION ─────────────────────────────────────
+function selectService(service, el) {
+  document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedService = service;
+  document.getElementById('service_type').value = service;
+  updatePrices();
+}
+
+// ── PLAN CHANGE ───────────────────────────────────────────
+function updatePrices() {
+  const plan = document.getElementById('plan').value;
+  selectedPlan = plan;
+
+  const priceSection = document.getElementById('price-section');
+  const priceOptions = document.getElementById('price-options');
+
+  if (!plan || !selectedService) {
+    priceSection.style.display = 'none';
+    return;
+  }
+
+  const options = prices[plan]?.[selectedService];
+  if (!options) {
+    priceSection.style.display = 'none';
+    return;
+  }
+
+  priceSection.style.display = 'block';
+  selectedAmount = 0;
+  document.getElementById('amount').value = '';
+
+  priceOptions.innerHTML = options.map((opt, i) => `
+    <div class="price-option" onclick="selectPrice(${opt.amount}, this)">
+      <span class="price-amount">$${opt.amount}</span>
+      <span class="price-desc">${opt.label}</span>
+    </div>
+  `).join('');
+}
+
+// ── PRICE SELECTION ───────────────────────────────────────
+function selectPrice(amount, el) {
+  document.querySelectorAll('.price-option').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedAmount = amount;
+  document.getElementById('amount').value = amount;
+}
+
+// ── SHOW ERROR ────────────────────────────────────────────
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function hideError() {
+  document.getElementById('errorMsg').style.display = 'none';
+}
+
+// ── STEP NAVIGATION ───────────────────────────────────────
+function setStep(n) {
+  [1, 2, 3].forEach(i => {
+    document.getElementById(`page-${i}`).style.display = i === n ? 'block' : 'none';
+    const stepEl = document.getElementById(`step-${i}`);
+    stepEl.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+    stepEl.querySelector('.step-dot').textContent = i < n ? '✓' : i;
+  });
+  hideError();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToStep2() {
+  if (!selectedService) { showError('Please select a service.'); return; }
+  if (!selectedPlan) { showError('Please select a plan.'); return; }
+  if (!selectedAmount) { showError('Please select a price option.'); return; }
+
+  // Update summary
+  document.getElementById('sum-service').textContent = selectedService;
+  document.getElementById('sum-plan').textContent = selectedPlan;
+  document.getElementById('sum-amount').textContent = `$${selectedAmount}`;
+
+  setStep(2);
+}
+
+function goToStep1() { setStep(1); }
+
+function goToStep3() {
+  const description = document.getElementById('description').value.trim();
+  if (!description || description.length < 20) {
+    showError('Please describe your project in at least 20 characters.');
+    return;
+  }
+
+  // Update final summary
+  document.getElementById('final-service').textContent = selectedService;
+  document.getElementById('final-plan').textContent = selectedPlan;
+  document.getElementById('final-desc').textContent =
+    description.length > 80 ? description.slice(0, 80) + '...' : description;
+  document.getElementById('final-amount').textContent = `$${selectedAmount}`;
+
+  setStep(3);
+}
+
+function goToStep2FromStep3() { setStep(2); }
+
+// Character counter
+document.addEventListener('DOMContentLoaded', () => {
+  const desc = document.getElementById('description');
+  if (desc) {
+    desc.addEventListener('input', function() {
+      document.getElementById('char-count').textContent =
+        `${this.value.length} / 2000 characters`;
+    });
+  }
+});
+
+// ── SUBMIT ORDER + PAYMENT ────────────────────────────────
+async function submitOrder() {
+  const description = document.getElementById('description').value.trim();
+  const btn = document.getElementById('pay-btn');
+  const file = document.getElementById('order-file').files[0];
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Processing...';
+
+  try {
+    // Step 1 — Create order
+    const orderData = await InnoCAD.apiRequest('/orders', {
+      method: 'POST',
+      body: JSON.stringify({
+        service_type: selectedService,
+        plan: selectedPlan,
+        description,
+        amount: selectedAmount
+      })
+    });
+
+    if (!orderData?.success) {
+      showError(orderData?.message || 'Failed to create order. Please try again.');
+      btn.disabled = false;
+      btn.innerHTML = 'Pay Now →';
+      return;
+    }
+
+    const orderId = orderData.data.order.id;
+
+    // Step 2 — Upload file if attached
+    if (file) {
+      btn.innerHTML = '<span class="spinner"></span> Uploading file...';
+      const formData = new FormData();
+      formData.append('name', InnoCAD.getUser().name);
+      formData.append('email', InnoCAD.getUser().email);
+      formData.append('user_type', selectedPlan);
+      formData.append('message', `Reference file for order #${orderId.slice(0,8).toUpperCase()}: ${description.slice(0,100)}`);
+      formData.append('file', file);
+
+      await fetch(`${InnoCAD.API}/contact`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${InnoCAD.getToken()}` },
+        body: formData
+      });
+    }
+
+    // Step 3 — Initialize payment
+    btn.innerHTML = '<span class="spinner"></span> Initializing payment...';
+    const payData = await InnoCAD.apiRequest('/payments/initialize', {
+      method: 'POST',
+      body: JSON.stringify({ order_id: orderId })
+    });
+
+    if (!payData?.success) {
+      showError(payData?.message || 'Failed to initialize payment. Please try again.');
+      btn.disabled = false;
+      btn.innerHTML = 'Pay Now →';
+      return;
+    }
+
+    // Step 4 — Redirect to Paystack
+    InnoCAD.showToast('Redirecting to payment...', 'info');
+    setTimeout(() => {
+      window.location.href = payData.data.authorizationUrl;
+    }, 800);
+
+  } catch (err) {
+    showError('Network error. Please check your connection and try again.');
+    btn.disabled = false;
+    btn.innerHTML = 'Pay Now →';
+  }
+}
+// ── FILE HANDLING ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const fileInput = document.getElementById('order-file');
+  if (fileInput) {
+    fileInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+
+      // Check file size — max 10MB
+      if (file.size > 10 * 1024 * 1024) {
+        InnoCAD.showToast('File too large. Maximum size is 10MB.', 'error');
+        this.value = '';
+        return;
+      }
+
+      // Show preview
+      const icons = {
+        pdf: '📄', dwg: '📐', stp: '⚙️', step: '⚙️',
+        png: '🖼️', jpg: '🖼️', jpeg: '🖼️'
+      };
+      const ext = file.name.split('.').pop().toLowerCase();
+      const size = (file.size / 1024).toFixed(1);
+      const sizeLabel = size > 1024
+        ? `${(size/1024).toFixed(1)} MB`
+        : `${size} KB`;
+
+      document.getElementById('file-icon').textContent = icons[ext] || '📎';
+      document.getElementById('file-name-display').textContent = file.name;
+      document.getElementById('file-size-display').textContent = sizeLabel;
+
+      const preview = document.getElementById('file-preview');
+      preview.style.display = 'flex';
+
+      document.getElementById('uploadArea').classList.add('has-file');
+      document.querySelector('.upload-text').textContent = 'File attached';
+      document.querySelector('.upload-sub').textContent = 'Click to change file';
+    });
+  }
+});
+
+function removeFile() {
+  document.getElementById('order-file').value = '';
+  document.getElementById('file-preview').style.display = 'none';
+  document.getElementById('uploadArea').classList.remove('has-file');
+  document.querySelector('.upload-text').textContent = 'Click to attach a file';
+  document.querySelector('.upload-sub').textContent = 'PDF, DWG, STP, PNG, JPG — max 10MB';
+}
+</script>
+
+</body>
+</html>

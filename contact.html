@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Modal</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com;">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="no-referrer">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="contact.css">
+<script src="security.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="card">
+
+    <!-- Close -->
+    <div class="close-btn" id="closeBtn">✕</div>
+
+    <!-- Form -->
+    <div class="form-section">
+      <input type="text" placeholder="Name">
+      <input type="email" placeholder="Email address">
+      
+      <!-- User Type Selection -->
+      <div class="user-type-section">
+        <label>I am a:</label>
+        <div class="user-type-buttons">
+          <button type="button" class="user-type-btn" data-type="student">
+            <i class="fa-solid fa-graduation-cap"></i> Student
+          </button>
+          <button type="button" class="user-type-btn" data-type="standard">
+            <i class="fa-solid fa-briefcase"></i> Standard
+          </button>
+          <button type="button" class="user-type-btn" data-type="professional">
+            <i class="fa-solid fa-star"></i> Professional
+          </button>
+        </div>
+        <input type="hidden" id="userType" name="userType" value="">
+      </div>
+      
+      <textarea placeholder="Send Message"></textarea>
+
+      <!-- Hidden file input -->
+      <input type="file" id="fileInput" accept=".pdf,.jpg,.png" multiple hidden>
+
+      <div class="buttons">
+        <button class="upload-btn" onclick="triggerUpload()">
+          <i class="fa-solid fa-upload"></i> Upload
+        </button>
+        <button class="send-btn">SEND</button>
+      </div>
+
+      <!-- File names -->
+      <p id="fileName"></p>
+    </div>
+
+    <!-- Info -->
+    <div class="info-section">
+      <h1>Contact us</h1>
+      <p>
+        Need help getting started with InnoCAD?<br>
+        Reach out and let's move your ideas forward
+      </p>
+
+      <div class="icons">
+        <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://x.com" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+      </div>
+
+      <div class="line"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Back button
+function goBack() {
+  window.history.back();
+}
+
+// Attach close button event listener
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    const closeBtn = document.getElementById('closeBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', goBack);
+    }
+  });
+} else {
+  const closeBtn = document.getElementById('closeBtn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', goBack);
+  }
+}
+
+// Trigger file upload
+function triggerUpload() {
+  document.getElementById("fileInput").click();
+}
+
+// Handle user type selection
+const userTypeButtons = document.querySelectorAll('.user-type-btn');
+if (userTypeButtons.length > 0) {
+  userTypeButtons.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      userTypeButtons.forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+      document.getElementById('userType').value = this.getAttribute('data-type');
+    });
+  });
+}
+
+// Handle file selection
+document.getElementById("fileInput").addEventListener("change", function() {
+  const files = this.files;
+  const fileNameDisplay = document.getElementById("fileName");
+
+  if (files.length > 0) {
+    let names = [];
+
+    for (let i = 0; i < files.length; i++) {
+      // File size check (2MB)
+      if (files[i].size > 2 * 1024 * 1024) {
+        alert(files[i].name + " is too large (max 2MB)");
+        this.value = "";
+        fileNameDisplay.textContent = "";
+        return;
+      }
+      names.push(files[i].name);
+    }
+
+    fileNameDisplay.textContent = "Selected: " + names.join(", ");
+  } else {
+    fileNameDisplay.textContent = "";
+  }
+});
+</script>
+
+</body>
+</html>

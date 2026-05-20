@@ -1,0 +1,139 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(150deg, #e8f0fd 0%, #f6f9ff 40%, #eef4ff 100%);
+  color: #1c1f25;
+  line-height: 1.5;
+  transition: background-color 0.3s ease;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* MAIN */
+.container {
+  width: min(96%, 1120px);
+  margin: 40px auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+/* CARD LAYOUT */
+.card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  background: linear-gradient(135deg, #fff 0%, #f8fbff 100%);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(22, 52, 110, 0.12);
+  border: 1px solid rgba(10, 42, 102, 0.12);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 28px rgba(22, 52, 110, 0.2);
+}
+
+.drawing img {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
+  object-position: center center;
+  border-radius: 12px;
+  transition: transform 0.35s ease;
+}
+
+.drawing img:hover {
+  transform: scale(1.03);
+}
+
+.drawing {
+  flex: 1 1 460px;
+  min-width: 260px;
+}
+
+.details {
+  flex: 1 1 320px;
+  min-width: 240px;
+}
+
+.details h3 {
+  color: #5f6f8f;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.details h4 {
+  margin-bottom: 12px;
+  color: #0a2a66;
+  font-size: 1.7rem;
+}
+
+.details p {
+  font-size: 0.96rem;
+  color: #3d4c6f;
+  margin-bottom: 18px;
+}
+
+/* HIGHLIGHT BOX */
+.highlight {
+  border: 1px solid rgba(10,42,102,0.18);
+  background: rgba(235, 243, 255, 0.88);
+  padding: 14px;
+  border-radius: 10px;
+}
+
+.highlight h5 {
+  margin-bottom: 10px;
+  color: #0d316e;
+}
+
+.highlight ul {
+  font-size: 0.95rem;
+  padding-left: 18px;
+  color: #374764;
+}
+
+.highlight li {
+  margin-bottom: 6px;
+}
+
+/* BUTTON */
+.center-btn {
+  text-align: center;
+  margin: 25px 0 45px;
+}
+
+.simulate {
+  padding: 12px 26px;
+  background: linear-gradient(110deg, #0a2a66 0%, #1c4cab 100%);
+  color: #fff;
+  border: none;
+  border-radius: 28px;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 18px rgba(7, 44, 121, 0.26);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.simulate:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(7, 44, 121, 0.32);
+}
+
+/* RESPONSIVE HAMBURGER MENU */\n@media (max-width: 768px) {\n  .hamburger {\n    display: flex !important;\n  }\n  \n  .nav-left {\n    position: fixed !important;\n    top: 55px !important;\n    left: 0 !important;\n    width: 100% !important;\n    background: #fff !important;\n    flex-direction: column !important;\n    max-height: 0 !important;\n    overflow: hidden !important;\n    transition: max-height 0.3s ease !important;\n    border-bottom: 1px solid #eee !important;\n    padding: 0 !important;\n    z-index: 1000 !important;\n  }\n  \n  .nav-left.active {\n    max-height: 350px !important;\n    padding: 15px 20px !important;\n  }\n  \n  .nav-links {\n    flex-direction: column !important;\n    gap: 0 !important;\n    width: 100% !important;\n  }\n  \n  .nav-links a {\n    padding: 8px 0 !important;\n    font-size: 14px !important;\n  }\n  \n  .nav-links a.contact {\n    margin-top: 8px !important;\n    padding: 10px 18px !important;\n    border: 2px solid var(--accent) !important;\n    border-radius: 6px !important;\n    background: transparent !important;\n    color: var(--accent) !important;\n    font-weight: 600 !important;\n    text-align: center !important;\n    display: inline-block !important;\n    line-height: 1.2 !important;\n  }\n\n  .container {\n    width: 95%;\n    padding: 0 10px;\n  }\n\n  .card {\n    flex-direction: column;\n    gap: 15px;\n    padding: 20px;\n  }\n\n  .drawing {\n    flex: none;\n    order: -1;\n  }\n\n  .details {\n    flex: none;\n  }\n\n  .details h3 {\n    font-size: 1.4rem;\n  }\n\n  .details h4 {\n    font-size: 1.2rem;\n  }\n\n  .details p {\n    font-size: 16px;\n    line-height: 1.5;\n  }\n\n  .highlight {\n    padding: 15px;\n  }\n\n  .highlight ul {\n    font-size: 15px;\n  }\n}\n\n@media (max-width: 420px) {\n  .hamburger {\n    display: flex !important;\n  }\n  \n  .nav-left {\n    position: fixed !important;\n    top: 55px !important;\n    left: 0 !important;\n    width: 100% !important;\n    background: #fff !important;\n    flex-direction: column !important;\n    max-height: 0 !important;\n    overflow: hidden !important;\n    transition: max-height 0.3s ease !important;\n    border-bottom: 1px solid #eee !important;\n    padding: 0 !important;\n    z-index: 1000 !important;\n  }\n  \n  .nav-left.active {\n    max-height: 300px !important;\n    padding: 12px 14px !important;\n  }\n  \n  .nav-links {\n    flex-direction: column !important;\n    gap: 0 !important;\n    width: 100% !important;\n  }\n  \n  .nav-links a {\n    padding: 6px 0 !important;\n    font-size: 12px !important;\n  }\n  \n  .nav-links a.contact {\n    padding: 8px 14px !important;\n    border Asc 2px solid var(--accent) !important;\n    border-radius: 6px !important;\n    background Asc transparent !important;\n    color: Asc var(--accent) !important;\n Asc font-weight: 600 !important;\n    text-align: center !important;\n    display: inline-block !important;\n    line-height: 1.2 !important;\n    margin-top: 6px !important;\n  }\n\n  .container {\n Asc width: 98%;\n  }\n\n  .card {\n Asc padding: 15px;\n Asc margin-bottom: 20px;\n  }\n\n  .details h3 {\n Asc font-size: 1.2rem;\n  }\n\n  .details p {\n Asc font-size:  Asc 15px;\n Asc  }\n\n Asc .simulate {\n Asc padding: 12px 24px;\n Asc font-size: 16px;\n Asc  }\n\n Asc .footer-links {\n Asc display: flex;\n Asc flex-wrap: wrap;\n Asc justify-content: center;\n Asc gap: 15px;\n Asc }\n}\n\n/* Large screens */\n@media Asc (min-width: 1200px) {\n Asc .container {\n Asc max-width: 1100px;\n Asc  }\n Asc }\n
+

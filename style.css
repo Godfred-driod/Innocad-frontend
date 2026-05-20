@@ -1,0 +1,662 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --dark: #0f0f12;
+    --dark-2: #1a1a1f;
+    --light: #ffffff;
+    --gray: #cfcfcf;
+    --gray-2: #9e9e9e;
+    --accent: #1f3c88;
+    --accent-soft: #e7ecff;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--light);
+    color: #111;
+    line-height: 1.6;
+}
+
+
+nav {
+    background: #fff;
+    padding: 14px 12px 14px 80px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    gap: 16px;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    gap: 5px;
+    padding: 8px;
+    margin-left: auto;
+}
+
+.hamburger span {
+    width: 24px;
+    height: 2.5px;
+    background: #222;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #222;
+    font-size: 14px;
+}
+
+.nav-links a.contact {
+    padding: 6px 16px;
+    border: 1px solid #222;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+
+.hero {
+    /* gradient overlay + background image from the project image folder */
+    background-image: linear-gradient(180deg, rgba(18,18,18,0.55), rgba(27,27,27,0.55)), url('image/picture1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    padding: 60px 80px 100px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 40px;
+    font-weight: 700;
+    max-width: 650px;
+}
+
+.hero p {
+    margin-top: 14px;
+    color: #d1d1d1;
+    max-width: 520px;
+    font-size: 15px;
+}
+
+.hero button,
+.hero-button {
+    margin-top: 28px;
+    padding: 10px 26px;
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* 3D PLACEHOLDER */
+.hero-objects {
+    margin-top: 40px;
+    height: 160px;
+    background: linear-gradient(90deg, #cfcfcf, #bfbfbf);
+    border-radius: 6px;
+    opacity: 0.85;
+}
+
+/* =======================
+   ANIMATIONS & HOVERS
+======================= */
+
+.hero h1,
+.hero p,
+.hero button,
+.hero-button {
+    transition: transform 0.35s ease, opacity 0.35s ease;
+    will-change: transform, opacity;
+}
+
+.hero h1 { animation: fadeUp 0.8s ease both; }
+.hero p { animation: fadeUp 1s ease both; animation-delay: 0.08s; }
+.hero button,
+.hero-button { animation: fadeUp 1.15s ease both; animation-delay: 0.16s; }
+
+.hero-objects {
+    animation: float 6s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero button:hover,
+.hero-button:hover {
+    transform: translateY(-4px) scale(1.02);
+    background: rgba(255,255,255,0.06);
+}
+
+.nav-links a { transition: color 0.22s ease, transform 0.18s ease; }
+.nav-links a:hover { color: var(--accent); transform: translateY(-2px); }
+.nav-links a.contact:hover { background: var(--accent); color: white; transform: translateY(-2px) scale(1.02); }
+
+.card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.card:hover { transform: translateY(-10px); box-shadow: 0 12px 30px rgba(15,26,58,0.12); }
+.card .img { transition: transform 0.45s ease; }
+.card:hover .img { transform: scale(1.03); }
+
+/* subtle focus for accessibility */
+.hero-button:focus,
+.nav-links a:focus,
+.hero button:focus,
+.card:focus {
+    outline: 3px solid rgba(31,60,136,0.12);
+    outline-offset: 3px;
+}
+
+/* Nav layout helpers for login icon */
+.nav-left{display:flex;align-items:center;gap:30px;margin-left:auto}
+.nav-login{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:transparent;text-decoration:none;margin-left:12px}
+.nav-login svg{width:36px;height:36px;display:block}
+.nav-login:hover{background:var(--accent-soft)}
+
+/* =======================
+   ABOUT + TARGET
+======================= */
+.about-target {
+    padding: 70px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+.about h3,
+.target h3 {
+    font-size: 18px;
+    margin-bottom: 14px;
+}
+
+.about p {
+    font-size: 14px;
+    color: #444;
+    max-width: 500px;
+}
+
+.target-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.target-buttons div {
+    padding: 12px;
+    background: #f2f2f2;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 13px;
+}
+
+/* =======================
+   SERVICES
+======================= */
+.services {
+    background: #f7f7f7;
+    padding: 70px 80px;
+    text-align: center;
+}
+
+.services h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.services p {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 40px;
+}
+
+.service-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 26px;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: left;
+}
+
+.card .img {
+    height: 120px;
+    background: #ddd;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.card .img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+.card span {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 13px;
+    color: #444;
+}
+
+.service-cards .card a {
+    color: #000;
+    text-decoration: none;
+}
+
+.services .cta {
+    margin-top: 40px;
+}
+
+.services .cta button {
+    padding: 10px 26px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* =======================
+   EXPECTATIONS
+======================= */
+.expect {
+    padding: 70px 80px;
+    text-align: center;
+}
+
+.expect h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.expect p {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 40px;
+}
+
+.expect-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.expect-grid div {
+    padding: 14px;
+    background: #f2f2f2;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+
+.reviews {
+    padding: 70px 80px;
+}
+
+.reviews h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+.review-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+}
+
+.bars div {
+    margin-bottom: 18px;
+}
+
+.label {
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.bar {
+    height: 6px;
+    background: #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.bar span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+}
+
+.review-image {
+    height: 220px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.review-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+footer {
+    background: #0d2a57;
+    color: #fff;
+    padding: 25px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+}
+
+footer p {
+    font-size: 13px;
+    color: #cfd8ff;
+}
+
+.footer-left {
+    padding-right: 20px;
+}
+
+.footer-left h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+}
+
+.footer-left span {
+    color: #f4c400;
+}
+
+.footer-left p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: #cfd8ff;
+}
+
+.footer-center {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-center a {
+    margin: 0;
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.footer-center a:hover {
+    color: #f4c400;
+}
+
+.footer-right {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.footer-right a {
+    margin-left: 0;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.footer-right a svg {
+    width: 20px;
+    height: 20px;
+}
+
+.footer-right a:hover {
+    color: #f4c400;
+    transform: scale(1.15);
+}
+/* =======================
+   RESPONSIVE MEDIA QUERIES
+   Non-intrusive adjustments to preserve original design
+======================= */
+
+@media (max-width: 1024px) {
+    nav { padding: 14px 40px; }
+    .hero { padding: 50px 40px 90px; }
+    .hero h1 { font-size: 36px; max-width: 600px; }
+    .hero p { max-width: 480px; font-size: 14px; }
+    .hero-objects { height: 150px; }
+    .about-target, .services, .expect, .reviews { padding-left: 40px; padding-right: 40px; }
+    .service-cards { grid-template-columns: repeat(3, 1fr); }
+    .expect-grid { grid-template-columns: repeat(2, 1fr); }
+    .review-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    footer { padding: 25px 40px; grid-template-columns: 1fr 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+    nav { padding: 12px 20px; }
+    .hamburger { display: flex; }
+    .nav-left {
+        position: fixed !important;
+        top: 55px !important;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        flex-direction: column;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        border-bottom: 1px solid #eee;
+        padding: 0;
+        margin-left: 0 !important;
+        align-items: flex-start !important;
+        gap: 0 !important;
+        display: flex !important;
+        z-index: 1000 !important;
+    }
+    .nav-left.active {
+        max-height: 500px !important;
+        padding: 15px 20px;
+        display: flex !important;
+    }
+    .nav-links {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+    .nav-links a {
+        padding: 8px 0;
+        font-size: 14px;
+    }
+    .nav-links a.contact {
+        margin-top: 8px;
+    }
+    .nav-login {
+        margin-left: 0;
+        margin-top: 12px;
+    }
+    .hero { padding: 40px 20px 60px; }
+    .hero h1 { font-size: 28px; max-width: 100%; }
+    .hero p { font-size: 14px; max-width: 100%; }
+    .hero-objects { height: 120px; }
+    .about-target { grid-template-columns: 1fr; gap: 20px; padding: 40px 20px; }
+    .target-buttons { grid-template-columns: 1fr; }
+    .service-cards { grid-template-columns: repeat(2, 1fr); }
+    .expect-grid { grid-template-columns: 1fr; }
+    .review-grid { grid-template-columns: 1fr; }
+    .review-image { height: 180px; }
+    footer { grid-template-columns: 1fr; padding: 20px; text-align: center; }
+    .footer-left { padding-right: 0; margin-bottom: 15px; }
+    .footer-center { margin-bottom: 15px; }
+    .footer-right { justify-content: center; }
+}
+
+@media (max-width: 420px) {
+    nav { padding: 10px 14px; }
+    .hamburger { display: flex; }
+    .logo { font-size: 16px; }
+    .nav-left {
+        position: fixed !important;
+        top: 55px !important;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        flex-direction: column;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        border-bottom: 1px solid #eee;
+        padding: 0;
+        margin-left: 0 !important;
+        align-items: flex-start !important;
+        gap: 0 !important;
+        display: flex !important;
+        z-index: 1000 !important;
+    }
+    .nav-left.active {
+        max-height: 300px !important;
+        padding: 12px 14px;
+        display: flex !important;
+    }
+    .nav-links {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+    .nav-links a {
+        padding: 6px 0;
+        font-size: 12px;
+    }
+    .nav-links a.contact {
+        padding: 6px 0;
+        border: 1px solid #222;
+        margin-top: 6px;
+    }
+    .nav-login {
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    .hero { padding: 30px 14px 48px; }
+    .hero h1 { font-size: 22px; }
+    .hero p { font-size: 13px; }
+    .hero-objects { height: 90px; margin-top: 24px; }
+    .card .img { height: 90px; }
+    footer { grid-template-columns: 1fr; padding: 15px; }
+    .footer-left { padding-right: 0; margin-bottom: 12px; }
+    .footer-left h2 { font-size: 18px; }
+    .footer-center { margin-bottom: 12px; }
+    .footer-right { justify-content: center; }
+}
+
+/* iPhone 12 specific tweaks (390px viewport) */
+@media (max-width: 390px) {
+    nav { padding: 8px 12px; }
+    .logo { font-size: 15px; }
+    .nav-links { gap: 8px; font-size: 12px; }
+    .nav-links a.contact { padding: 4px 10px; font-size: 12px; }
+
+    .hero { padding: 26px 12px 44px; }
+    .hero h1 { font-size: 20px; line-height: 1.25; }
+    .hero p { font-size: 13px; margin-top: 10px; }
+    .hero button { padding: 8px 16px; font-size: 13px; }
+    .hero-objects { height: 85px; margin-top: 24px; }
+
+    .about-target { padding: 30px 12px; gap: 18px; }
+    .about p { max-width: 100%; }
+    .target-buttons { grid-template-columns: 1fr; gap: 12px; }
+
+    .services, .expect, .reviews { padding-left: 12px; padding-right: 12px; }
+    .service-cards { grid-template-columns: 1fr; gap: 18px; }
+    .card { padding: 12px; }
+    .card .img { height: 90px; }
+
+    .expect-grid { grid-template-columns: 1fr; gap: 14px; }
+
+    .review-grid { grid-template-columns: 1fr; gap: 18px; }
+    .review-image { height: 140px; }
+
+    footer { grid-template-columns: 1fr; padding: 12px; }
+    .footer-left { padding-right: 0; margin-bottom: 10px; }
+    .footer-left h2 { font-size: 16px; }
+    .footer-center { margin-bottom: 10px; font-size: 12px; }
+    .footer-right { justify-content: center; gap: 10px; font-size: 14px; }
+}
+
+.contact_button{
+    color: white;
+}

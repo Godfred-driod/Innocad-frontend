@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Successful — InnoCAD</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.success-wrap {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.success-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 48px 40px;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(15,23,42,0.10);
+}
+
+.success-icon {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: #d1fae5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin: 0 auto 20px;
+}
+
+.success-card h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.success-card p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.success-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-dashboard {
+  padding: 12px 24px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.btn-dashboard:hover { background: #152d6e; }
+
+.btn-home {
+  padding: 12px 24px;
+  border: 1px solid #e2e6f0;
+  color: #6b7280;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.btn-home:hover { background: #f7f8fc; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">InnoCAD</div>
+  <div class="nav-left">
+    <div class="nav-links">
+      <a href="Index.html">Home</a>
+    </div>
+    <a class="nav-login" href="login.html" aria-label="Login">
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="3" stroke="#0f172a" stroke-width="1.5"/>
+        <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </div>
+</nav>
+
+<div class="success-wrap">
+  <div class="success-card" id="resultCard">
+    <div class="success-icon" id="resultIcon">⏳</div>
+    <h2 id="resultTitle">Verifying payment...</h2>
+    <p id="resultMsg">Please wait while we confirm your payment.</p>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.search);
+  const reference = params.get('reference') || params.get('trxref');
+
+  const icon = document.getElementById('resultIcon');
+  const title = document.getElementById('resultTitle');
+  const msg = document.getElementById('resultMsg');
+  const card = document.getElementById('resultCard');
+
+  if (!reference) {
+    icon.textContent = '✗';
+    icon.style.background = '#fee2e2';
+    title.textContent = 'No payment reference found';
+    msg.textContent = 'Something went wrong. Please check your dashboard for your order status.';
+    card.innerHTML += `
+      <div class="success-btns">
+        <a href="user-dashboard.html" class="btn-dashboard">Go to Dashboard</a>
+      </div>
+    `;
+    return;
+  }
+
+  try {
+    const data = await InnoCAD.apiRequest(`/payments/verify/${reference}`);
+
+    if (data?.success) {
+      icon.textContent = '✓';
+      title.textContent = 'Payment Successful!';
+      msg.textContent = 'Your order has been confirmed and our team will start working on it shortly. You will receive a confirmation email.';
+      card.innerHTML += `
+        <div class="success-btns">
+          <a href="user-dashboard.html" class="btn-dashboard">View My Orders</a>
+          <a href="Index.html" class="btn-home">Go Home</a>
+        </div>
+      `;
+    } else {
+      icon.textContent = '!';
+      icon.style.background = '#fef3c7';
+      title.textContent = 'Payment Pending';
+      msg.textContent = 'Your payment is being processed. Check your dashboard in a few minutes for your order status.';
+      card.innerHTML += `
+        <div class="success-btns">
+          <a href="user-dashboard.html" class="btn-dashboard">View My Dashboard</a>
+        </div>
+      `;
+    }
+  } catch (e) {
+    icon.textContent = '✓';
+    title.textContent = 'Order Placed!';
+    msg.textContent = 'Your order has been received. Check your dashboard and email for confirmation.';
+    card.innerHTML += `
+      <div class="success-btns">
+        <a href="user-dashboard.html" class="btn-dashboard">View My Orders</a>
+      </div>
+    `;
+  }
+});
+</script>
+
+</body>
+</html>
