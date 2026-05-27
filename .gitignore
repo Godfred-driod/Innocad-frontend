@@ -1,0 +1,14 @@
+# 3D model render folders
+Assembly roller.12/
+Assembly shock.13/
+Table 1.14/
+Table.4/
+Tree phase.15/
+Wood Table.15/
+*.exr
+*.360
+
+# System files
+.DS_Store
+Thumbs.db
+node_modules/
