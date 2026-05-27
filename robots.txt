@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /user-dashboard.html
+Disallow: /order-form.html
+
+Sitemap: https://innocadservices.com/sitemap.xml

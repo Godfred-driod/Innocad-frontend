@@ -308,7 +308,9 @@ nav {
 }
 
 .services .cta {
-    margin-top: 40px;
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
 }
 
 .services .cta button {
@@ -318,6 +320,16 @@ nav {
     border: none;
     border-radius: 20px;
     cursor: pointer;
+}
+
+.services .cta button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(31, 60, 136, 0.25);
+}
+
+.services .cta button a {
+    text-decoration: none;
+    color: white;
 }
 
 /* =======================
@@ -659,4 +671,67 @@ footer p {
 
 .contact_button{
     color: white;
+}
+.cta-banner {
+  background: linear-gradient(135deg, #0d1f4a, #1f3c88);
+  padding: 60px 80px;
+  text-align: center;
+  color: #fff;
+}
+
+.cta-banner h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.cta-banner p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 28px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-banner-btns {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-banner-btn {
+  padding: 13px 30px;
+  background: #f4c400;
+  color: #0d1f4a;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.cta-banner-btn:hover {
+  background: #e6b800;
+  transform: translateY(-2px);
+}
+
+.cta-banner-btn-outline {
+  padding: 13px 30px;
+  border: 2px solid rgba(255,255,255,0.4);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.cta-banner-btn-outline:hover {
+  border-color: #fff;
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-2px);
 }

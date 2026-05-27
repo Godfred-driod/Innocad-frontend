@@ -3,16 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact Modal</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com;">
+<title>Contact — InnoCAD</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' http://localhost:3000;">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="no-referrer">
-
-<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="contact.css">
 <script src="security.js" defer></script>
 <script src="app.js" defer></script>
+<script src="auth.js" defer></script>
+<style>
+.send-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #1e1b4b;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.success-msg {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 12px;
+  display: none;
+  border: 1px solid #a7f3d0;
+}
+.error-msg {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 12px;
+  display: none;
+  border: 1px solid #fecaca;
+}
+</style>
 </head>
 
 <body>
@@ -25,9 +62,9 @@
 
     <!-- Form -->
     <div class="form-section">
-      <input type="text" placeholder="Name">
-      <input type="email" placeholder="Email address">
-      
+      <input type="text" id="contactName" placeholder="Name" required>
+      <input type="email" id="contactEmail" placeholder="Email address" required>
+
       <!-- User Type Selection -->
       <div class="user-type-section">
         <label>I am a:</label>
@@ -44,21 +81,25 @@
         </div>
         <input type="hidden" id="userType" name="userType" value="">
       </div>
-      
-      <textarea placeholder="Send Message"></textarea>
+
+      <textarea id="contactMessage" placeholder="Type Here... Specify your dimensions and units" required></textarea>
 
       <!-- Hidden file input -->
-      <input type="file" id="fileInput" accept=".pdf,.jpg,.png" multiple hidden>
+      <input type="file" id="fileInput" accept=".pdf,.jpg,.png" hidden>
 
       <div class="buttons">
         <button class="upload-btn" onclick="triggerUpload()">
           <i class="fa-solid fa-upload"></i> Upload
         </button>
-        <button class="send-btn">SEND</button>
+        <button class="send-btn" id="sendBtn" onclick="submitContact()">SEND</button>
       </div>
 
-      <!-- File names -->
+      <!-- File name display -->
       <p id="fileName"></p>
+
+      <!-- Success / Error messages -->
+      <div class="success-msg" id="successMsg">✓ Message sent! We'll get back to you within 24 hours.</div>
+      <div class="error-msg" id="errorMsg"></div>
     </div>
 
     <!-- Info -->
@@ -70,10 +111,10 @@
       </p>
 
       <div class="icons">
-        <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="https://x.com" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
-        <a href="https://linkedin.com" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
-        <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.facebook.com/share/1KWeGWaFFU/?mibextid=wwXIfr" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://x.com/innocad1?s=21" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://www.linkedin.com/company/122794131/admin/inbox/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="https://www.instagram.com/inno_cad?igsh=eHp4NG5meDZnYjIy&utm_source=qr" target="_blank"><i class="fa-brands fa-instagram"></i></a>
       </div>
 
       <div class="line"></div>
@@ -83,68 +124,164 @@
 </div>
 
 <script>
-// Back button
-function goBack() {
-  window.history.back();
-}
-
-// Attach close button event listener
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', function() {
-    const closeBtn = document.getElementById('closeBtn');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', goBack);
-    }
-  });
-} else {
+// ── CLOSE BUTTON ───────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
   const closeBtn = document.getElementById('closeBtn');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', goBack);
-  }
-}
+  if (closeBtn) closeBtn.addEventListener('click', () => window.history.back());
 
-// Trigger file upload
+  // Auto-fill if logged in
+  const user = JSON.parse(localStorage.getItem('innocad_user') || 'null');
+  if (user) {
+    document.getElementById('contactName').value = user.name || '';
+    document.getElementById('contactEmail').value = user.email || '';
+
+    // Pre-select category if available
+    if (user.category) {
+      const btn = document.querySelector(`[data-type="${user.category}"]`);
+      if (btn) {
+        btn.classList.add('selected');
+        document.getElementById('userType').value = user.category;
+      }
+    }
+  }
+});
+
+// ── TRIGGER FILE UPLOAD ─────────────────────
 function triggerUpload() {
   document.getElementById("fileInput").click();
 }
 
-// Handle user type selection
-const userTypeButtons = document.querySelectorAll('.user-type-btn');
-if (userTypeButtons.length > 0) {
-  userTypeButtons.forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      userTypeButtons.forEach(b => b.classList.remove('selected'));
-      this.classList.add('selected');
-      document.getElementById('userType').value = this.getAttribute('data-type');
-    });
+// ── USER TYPE SELECTION ─────────────────────
+document.querySelectorAll('.user-type-btn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('.user-type-btn').forEach(b => b.classList.remove('selected'));
+    this.classList.add('selected');
+    document.getElementById('userType').value = this.getAttribute('data-type');
   });
-}
+});
 
-// Handle file selection
+// ── FILE SELECTION ──────────────────────────
 document.getElementById("fileInput").addEventListener("change", function() {
   const files = this.files;
   const fileNameDisplay = document.getElementById("fileName");
 
   if (files.length > 0) {
-    let names = [];
-
-    for (let i = 0; i < files.length; i++) {
-      // File size check (2MB)
-      if (files[i].size > 2 * 1024 * 1024) {
-        alert(files[i].name + " is too large (max 2MB)");
-        this.value = "";
-        fileNameDisplay.textContent = "";
-        return;
-      }
-      names.push(files[i].name);
+    const file = files[0];
+    if (file.size > 2 * 1024 * 1024) {
+      alert(file.name + " is too large (max 2MB)");
+      this.value = "";
+      fileNameDisplay.textContent = "";
+      return;
     }
-
-    fileNameDisplay.textContent = "Selected: " + names.join(", ");
+    fileNameDisplay.textContent = "Selected: " + file.name;
   } else {
     fileNameDisplay.textContent = "";
   }
 });
+
+// ── SUBMIT CONTACT FORM ─────────────────────
+async function submitContact() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const user_type = document.getElementById('userType').value;
+  const message = document.getElementById('contactMessage').value.trim();
+  const file = document.getElementById('fileInput').files[0];
+  const btn = document.getElementById('sendBtn');
+  const successMsg = document.getElementById('successMsg');
+  const errorMsg = document.getElementById('errorMsg');
+
+  // Hide previous messages
+  successMsg.style.display = 'none';
+  errorMsg.style.display = 'none';
+
+  // Validation
+  if (!name) {
+    errorMsg.textContent = 'Please enter your name.';
+    errorMsg.style.display = 'block';
+    return;
+  }
+
+  if (!email) {
+    errorMsg.textContent = 'Please enter your email address.';
+    errorMsg.style.display = 'block';
+    return;
+  }
+
+  if (!user_type) {
+    errorMsg.textContent = 'Please select your user type.';
+    errorMsg.style.display = 'block';
+    return;
+  }
+
+  if (!message || message.length < 10) {
+    errorMsg.textContent = 'Please enter a message (at least 10 characters).';
+    errorMsg.style.display = 'block';
+    return;
+  }
+
+  // Set loading state
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+  try {
+    // Use FormData to support file upload
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('user_type', user_type);
+    formData.append('message', message);
+    if (file) formData.append('file', file);
+
+    // Get token if logged in
+    const token = localStorage.getItem('innocad_token');
+    const headers = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const res = await fetch('http://localhost:3000/api/contact', {
+      method: 'POST',
+      headers,
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      // Show success
+      successMsg.style.display = 'block';
+      btn.innerHTML = 'SEND';
+      btn.disabled = false;
+
+      // Reset form
+      document.getElementById('contactName').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactMessage').value = '';
+      document.getElementById('fileInput').value = '';
+      document.getElementById('fileName').textContent = '';
+      document.getElementById('userType').value = '';
+      document.querySelectorAll('.user-type-btn').forEach(b => b.classList.remove('selected'));
+
+      // Re-fill if logged in
+      const user = JSON.parse(localStorage.getItem('innocad_user') || 'null');
+      if (user) {
+        document.getElementById('contactName').value = user.name || '';
+        document.getElementById('contactEmail').value = user.email || '';
+      }
+
+    } else {
+      errorMsg.textContent = data.message || 'Failed to send message. Please try again.';
+      errorMsg.style.display = 'block';
+      btn.innerHTML = 'SEND';
+      btn.disabled = false;
+    }
+
+  } catch (err) {
+    errorMsg.textContent = 'Network error. Please make sure the server is running.';
+    errorMsg.style.display = 'block';
+    btn.innerHTML = 'SEND';
+    btn.disabled = false;
+  }
+}
 </script>
 
 </body>
