@@ -238,7 +238,7 @@ async function submitContact() {
     const headers = {};
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
-    const res = await fetch('http://localhost:3000/api/contact', {
+    const res = await fetch('https://innocad-backend.onrender.com/api/contact', {
       method: 'POST',
       headers,
       body: formData
