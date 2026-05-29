@@ -187,31 +187,7 @@
 </footer>
 <!-- JAVASCRIPT -->
 <script>
-// Hamburger menu toggle
-function initHamburger(){
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('navMenu');
-    if(!hamburger || !navMenu) return;
 
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
-    // Close menu on link click
-    document.querySelectorAll('#navMenu a').forEach(link => {
-        link.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        });
-    });
-}
-
-if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initHamburger);
-} else {
-    initHamburger();
-}
 
 // Slider functionality
 document.querySelectorAll('.slider').forEach(slider => {
