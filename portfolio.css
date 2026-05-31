@@ -111,34 +111,12 @@
 .avatar{width:96px;height:96px;border-radius:50%;background-color:#eef2ff;background-size:cover;background-position:center;box-shadow:0 6px 14px rgba(15,23,42,0.06)}
 .card .avatar{margin-bottom:6px}
 
-/* Footer */
-.footer{background:#0d2a57;color:#fff;padding:25px;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center}
-.footer-left{padding-right:20px}
-.footer-left h2{margin:0;font-size:22px;font-weight:700}
-.footer-left span{color:#f4c400}
-.footer-left p{margin:4px 0 0;font-size:13px;color:#cfd8ff}
-.footer-center{display:flex;flex-direction:column;gap:10px;justify-content:center;align-items:center}
-.footer-center a{margin:0;text-decoration:none;color:#fff;font-size:14px}
-.footer-center a:hover{color:#f4c400}
-.footer-right{display:flex;gap:12px;justify-content:flex-end}
-.footer-right a{margin-left:0;cursor:pointer;transition:color 0.3s ease, transform 0.2s ease;color:#fff;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px}
-.footer-right a svg{width:20px;height:20px}
-.footer-right a:hover{color:#f4c400;transform:scale(1.15)}
-
 @media (max-width:900px){
   .grid{grid-template-columns:repeat(2,1fr)}
-  footer{grid-template-columns:1fr;padding:20px}
-  .footer-left{padding-right:0;margin-bottom:15px}
-  .footer-center{margin-bottom:15px}
-  .footer-right{justify-content:center}
 }
 @media (max-width:600px){
   .grid{grid-template-columns:1fr}
   .container{padding:16px}
-  footer{grid-template-columns:1fr;padding:15px}
-  .footer-left{padding-right:0;margin-bottom:10px;text-align:center}
-  .footer-center{margin-bottom:10px;text-align:center}
-  .footer-right{justify-content:center}
 }
 
 /* Social links inside personnel cards */
