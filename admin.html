@@ -1413,6 +1413,28 @@ function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
 }
 
+// Close sidebar when tapping outside on mobile
+document.addEventListener('click', (e) => {
+  const sidebar = document.getElementById('sidebar');
+  const hamburgerBtn = document.querySelector('.hamburger-btn');
+  if (
+    sidebar.classList.contains('open') &&
+    !sidebar.contains(e.target) &&
+    !hamburgerBtn.contains(e.target)
+  ) {
+    sidebar.classList.remove('open');
+  }
+});
+
+// Close sidebar when a nav item is clicked on mobile
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    if (window.innerWidth <= 900) {
+      document.getElementById('sidebar').classList.remove('open');
+    }
+  });
+});
+
 // ── PAGE NAVIGATION ────────────────────────
 const pageTitles = {
   dashboard: ['Dashboard', "Welcome back, here's what's happening"],
